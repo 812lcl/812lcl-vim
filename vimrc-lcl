@@ -98,6 +98,7 @@
     set bs=2 					" 在插入模式下用退格删除
     set autoindent              " 与前一行同样等级缩进
     au VimResized * exe "normal! \<c-w>="
+    au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
     autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o " 下一行不自动添加注释
 
 " }
@@ -388,8 +389,8 @@
     " }
 
     " Expand_region {
-        map L <Plug>(expand_region_expand)
-        map H <Plug>(expand_region_shrink)
+    "    map L <Plug>(expand_region_expand)
+    "    map H <Plug>(expand_region_shrink)
     " }
 
     " Singlecompile {
