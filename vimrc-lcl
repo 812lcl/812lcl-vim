@@ -46,6 +46,8 @@
     Bundle 'tpope/vim-cucumber'
     Bundle 'quentindecock/vim-cucumber-align-pipes'
     Bundle 'Puppet-Syntax-Highlighting'
+    Bundle 'ianva/vim-youdao-translater'
+    Bundle 'nathanaelkane/vim-indent-guides'
 
     " 代码存放在 vim script 上
     Bundle 'sudo.vim'
@@ -156,7 +158,7 @@
     hi clear LineNr                 " Current line number row will have same background color in relative mode
 
     hi CursorLineNr ctermfg=red
-    hi VertSplit ctermbg=none ctermfg=grey cterm=none
+    hi VertSplit ctermbg=Grey ctermfg=Grey cterm=none
     hi Visual ctermbg=81 ctermfg=black cterm=none
     hi Comment ctermfg=blue guifg=#145ecc
     hi Statement ctermfg=3
@@ -380,7 +382,7 @@
     " }
 
     " TaskList {
-        map <unique> <Leader>d <Plug>TaskList
+        map <unique> <Leader>t <Plug>TaskList
     " }
 
     " Unite {
@@ -428,4 +430,15 @@
         let g:vbookmark_bookmarkSaveFile = $HOME . '/.vimtmp/vimbookmark'
     " }
 
+    " vim-youdao-translater {
+        vnoremap <silent> <Leader>d <Esc>:Ydv<CR>
+        nnoremap <silent> <Leader>d <Esc>:Ydc<CR>
+        noremap <Leader>de :Yde<CR>
+    " }
+
+    " vim-indent-guides {
+        let g:indent_guides_enable_on_vim_startup=0
+        let g:indent_guides_start_level=2
+        let g:indent_guides_guide_size=1
+    " }
 " }
