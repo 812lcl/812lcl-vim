@@ -163,9 +163,10 @@
     hi Comment ctermfg=blue guifg=#145ecc
     hi Statement ctermfg=3
 
-    hi DiffAdd ctermbg=none ctermfg=LightBlue
-    hi DiffChange ctermbg=none ctermfg=yellow
-    hi DiffText ctermbg=none ctermfg=55
+    hi DiffAdd ctermbg=blue ctermfg=white
+    hi DiffDelete ctermbg=green ctermfg=none
+    hi DiffChange ctermbg=red ctermfg=White
+    hi DiffText ctermbg=yellow ctermfg=black
 
     set backspace=indent,eol,start  " Backspace for dummies
     set linespace=0                 " No extra spaces between rows
