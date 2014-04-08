@@ -108,8 +108,8 @@
     set tabstop=4                   " tab缩进4个空格
     set shiftwidth=4                " 自动缩进空格数
     set softtabstop=4               " 退格删除缩进
-    set backspace=indent,start      " 退格可删除缩进和原有字符
     set autoindent                  " 与前一行同样等级缩进
+    set backspace=indent,eol,start  " 退格可删除缩进和原有字符
     au VimResized * exe "normal! \<c-w>="
     au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
     autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o " 下一行不自动添加注释
@@ -123,7 +123,6 @@
     nmap V v$h
     nmap j gj
     nmap k gk
-    nnoremap ; :
     inoremap jj <ESC>
     nnoremap <silent> J :bp<CR>
     nnoremap <silent> K :bn<CR>
@@ -249,6 +248,7 @@
         let NERDTreeWinPos=0                    " 在左侧
         let NERDTreeWinSize=25                  " 设置宽度
         let NERDTreeShowHidden=1                " 显示隐藏文件
+        let NERDTreeQuitOnOpen=1                " 打开后退出NERDTree
         let NERDTreeShowBookmarks=1             " 显示书签
         let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
     " }
@@ -311,7 +311,7 @@
 
     " gitgutter {
         let g:gitgutter_enabled = 1
-        let g:gitgutter_highlight_lines = 1
+        let g:gitgutter_highlight_lines = 0
         let g:gitgutter_map_keys = 0
         let g:gitgutter_sign_column_always = 1
         nmap gh <Plug>GitGutterNextHunk
@@ -334,10 +334,6 @@
 
     " surround {
         xmap s <Plug>VSurround
-    " }
-
-    " EasyMotion {
-        let g:EasyMotion_leader_key = 'f' 			" 默认是<leader><leader>
     " }
 
     " UltiSnips {
