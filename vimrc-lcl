@@ -1,6 +1,6 @@
 " Vundle {"{{{
-    set nocompatible 	" 设置 vim 为不兼容 vi 模式
-    filetype off		" 必须的
+    set nocompatible    " 设置 vim 为不兼容 vi 模式
+    filetype off        " 必须的
 
     set rtp+=~/.vim/bundle/vundle/
     call vundle#rc()
@@ -103,7 +103,7 @@
 " }
 
 " Formatting {
-    
+
     set expandtab                   " tab=空格
     set tabstop=4                   " tab缩进4个空格
     set shiftwidth=4                " 自动缩进空格数
@@ -118,9 +118,7 @@
 
 " Key (re)Mappings {
 
-    let mapleader="," 			" 映射<leader>键到为,
-    nmap Y y$
-    nmap V v$h
+    let mapleader=","           " 映射<leader>键到为,
     nmap j gj
     nmap k gk
     inoremap jj <ESC>
@@ -138,6 +136,8 @@
 
     cnoremap <C-a> <Home>
     cnoremap <C-e> <End>
+    cnoremap <C-p> <Up>
+    cnoremap <C-n> <Down>
 
     " 修正易错命令
     command -bang -nargs=* Q q<bang>
@@ -164,6 +164,8 @@
     set tabpagemax=15               " 最多15个Tab
     set showmode                    " 显示当前mode
     set cursorline                  " 高亮当前行
+    set list                        " 显示特殊符号
+    set listchars=tab:›\ ,trail:•,extends:#,nbsp:.
 
     hi clear SignColumn             " 标记列背景和主题背景匹配
     hi clear LineNr                 " 当前行列背景和主题背景匹配
@@ -185,7 +187,7 @@
     endif
 
     if has('statusline')
-        set laststatus=2
+        set laststatus=1
         set statusline=%<%f\                     " Filename
         set statusline+=%w%h%m%r                 " Options
         set statusline+=%{fugitive#statusline()} " Git Hotness
@@ -199,10 +201,15 @@
 " Plugins {
 
     " vim-airline {
-        set laststatus=2                                " 显示状态栏
-        let g:airline_theme='solarized'
-        let g:airline#extensions#tabline#enabled = 1    "顶部tab栏显示
-        let g:airline_powerline_fonts = 0
+        set laststatus=2                                    " 显示状态栏
+        let g:airline_theme='solarized'                     " 设置主题
+        let g:airline_powerline_fonts = 0                   " 是否使用powerline字体
+        let g:airline#extensions#tabline#enabled = 1        " 顶部tab栏显示
+        let g:airline#extensions#tabline#tab_nr_type = 1
+        let g:airline#extensions#tabline#show_tab_nr = 1
+        let g:airline#extensions#tabline#show_tab_type = 1
+        let g:airline#extensions#tabline#buffer_nr_show = 1
+
         if g:airline_powerline_fonts != 1
             let g:airline_left_sep=''
             let g:airline_right_sep=''
@@ -214,14 +221,14 @@
             let g:airline_section_a = airline#section#create(['mode'])
             let g:airline_section_b = airline#section#create_left(['branch','hunks'])
             let g:airline_section_c = airline#section#create(['%f'])
-            let g:airline_section_y = airline#section#create(['ffenc','%4B'])
+            let g:airline_section_y = airline#section#create(['ffenc','%4b'])
             let g:airline_section_z = airline#section#create(['%P',':','%4l',',','%3c'])
         endfunction
         autocmd VimEnter * call AirlineInit()
     " }
 
     " Cscope {
-        :set cscopequickfix=s-,c-,d-,i-,t-,e-	" 使用QuickFix窗口来显示cscope查找结果
+        :set cscopequickfix=s-,c-,d-,i-,t-,e-   " 使用QuickFix窗口来显示cscope查找结果
         :set cscopetag
         " 按下面这种组合键有技巧,按了<C-_>后要马上按下一个键,否则屏幕一闪
         " 就回到nomal状态了
@@ -238,8 +245,8 @@
 
     " Tagbar {
         nmap <silent> <Leader>r :TagbarToggle<cr>
-        let g:tagbar_left = 0 					"在右侧
-        let g:tagbar_width = 25 				"设置宽度
+        let g:tagbar_left = 0                   " 在右侧
+        let g:tagbar_width = 25                 " 设置宽度
     " }
 
     " NerdTree {
@@ -277,7 +284,7 @@
     " ctrlp {
         let g:ctrlp_map = '<c-p>'
         let g:ctrlp_cmd = 'CtrlP'
-        let g:ctrlp_open_multiple_files = 'v' 	" <C-Z><C-O>时垂直分屏打开多个文件
+        let g:ctrlp_open_multiple_files = 'v'   " <C-Z><C-O>时垂直分屏打开多个文件
         let g:ctrlp_working_path_mode= 'ra'
         let g:ctrlp_match_window_bottom= 1
         let g:ctrlp_max_height= 10
@@ -337,7 +344,7 @@
     " }
 
     " UltiSnips {
-        let g:UltiSnipsExpandTrigger = "<c-j>"  	" ultisnips与supertab快捷键重复,重新定义
+        let g:UltiSnipsExpandTrigger = "<c-j>"      " ultisnips与supertab快捷键重复,重新定义
     " }
 
     " TaskList {
@@ -408,20 +415,20 @@
         let g:neocomplcache_dictionary_filetype_lists = {'_' : $HOME . "/.vim/static/english_dict"}
         let g:neocomplcache_auto_completion_start_length = 2
         let g:neocomplcache_enable_smart_case = 1
-        let g:neocomplcache_enable_fuzzy_completion = 1 		" 开启模糊匹配
-        let g:neocomplcache_fuzzy_completion_start_length = 2 	" 3个字母后开启模糊匹配
+        let g:neocomplcache_enable_fuzzy_completion = 1         " 开启模糊匹配
+        let g:neocomplcache_fuzzy_completion_start_length = 2   " 3个字母后开启模糊匹配
         let g:neocomplcache_min_syntax_length = 3
         let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
     " }
 
     " YouCompleteMe {
-        set completeopt=longest,menu					" 关掉补全时的预览窗口
-        let g:ycm_confirm_extra_conf = 0 				" 不用每次提示加载.ycm_extra_conf.py文件
+        set completeopt=longest,menu                    " 关掉补全时的预览窗口
+        let g:ycm_confirm_extra_conf = 0                " 不用每次提示加载.ycm_extra_conf.py文件
         let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/cpp/ycm/.ycm_extra_conf.py'
         let g:ycm_show_diagnostics_ui = 0               " 关闭ycm的syntastic
         let g:ycm_filetype_whitelist = {'c' : 1, 'cpp' : 1, 'java' : 1, 'python' : 1}
-        let g:ycm_complete_in_comments = 1 				" 评论中也应用补全
-        let g:ycm_min_num_of_chars_for_completion = 2 	" 两个字开始补全
+        let g:ycm_complete_in_comments = 1              " 评论中也应用补全
+        let g:ycm_min_num_of_chars_for_completion = 2   " 两个字开始补全
         let g:ycm_seed_identifiers_with_syntax = 1
         let g:ycm_key_invoke_completion = '<C-Space>'
         let g:ycm_semantic_triggers =  {'c' : ['->', '.'], 'objc' : ['->', '.'], 'ocaml' : ['.', '#'], 'cpp,objcpp' : ['->', '.', '::'], 'php' : ['->', '::'], 'cs,java,javascript,vim,coffee,python,scala,go' : ['.'], 'ruby' : ['.', '::']}
