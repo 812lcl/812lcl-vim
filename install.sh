@@ -28,14 +28,19 @@ then
     mkdir -p $HOME/.vim/bundle
 fi
 
-if [ ! -d $HOME/.vimtmp/undo ]
+if [ ! -d $HOME/.vim/.vimtmp/undo ]
 then
-    mkdir -p $HOME/.vimtmp/undo
+    mkdir -p $HOME/.vim/.vimtmp/undo
 fi
 
-if [ ! -e $HOME/.vimtmp/vimbookmark ]
+if [ ! -d $HOME/.vim/.vimtmp/unite ]
 then
-    touch $HOME/.vimtmp/vimbookmark
+    mkdir -p $HOME/.vim/.vimtmp/unite
+fi
+
+if [ ! -e $HOME/.vim/.vimtmp/vimbookmark ]
+then
+    touch $HOME/.vim/.vimtmp/vimbookmark
 fi
 
 echo "Step3: install vundle"
@@ -52,6 +57,12 @@ system_shell=$SHELL
 export SHELL="/bin/sh"
 vim -u "$HOME/.vimrc" +BundleInstall! +BundleClean +qall
 export SHELL=$system_shell
+
+if [ ! -d $HOME/.vim/bundle/vimproc.vim ]
+then
+    cd $HOME/.vim/bundle/vimproc.vim
+    make
+fi
 
 echo "Step5: compile YouCompleteMe"
 echo "It will take a long time, just be patient!"

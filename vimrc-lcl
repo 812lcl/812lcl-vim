@@ -15,6 +15,8 @@
     Bundle 'Shougo/neocomplcache.vim'
     Bundle 'Shougo/vimproc.vim'
     Bundle 'Shougo/vimshell.vim'
+    Bundle 'Shougo/unite-outline'
+    Bundle 'ujihisa/unite-colorscheme'
     Bundle 'terryma/vim-multiple-cursors'
     Bundle 'scrooloose/syntastic'
     Bundle 'scrooloose/nerdtree'
@@ -30,7 +32,6 @@
     Bundle 'honza/vim-snippets'
     Bundle 'bling/vim-airline'
     Bundle 'Valloric/YouCompleteMe'
-    Bundle 'osyo-manga/vim-over'
     Bundle 'godlygeek/tabular'
     Bundle 'gorodinskiy/vim-coloresque'
     Bundle 'greyblake/vim-preview'
@@ -121,8 +122,8 @@
 
 " Key (re)Mappings {
 
-    let mapleader=","           " 映射<leader>键为',',默认'\' remain <Leader>y u i o p k c b m
-    let maplocalleader=" "      " 映射<localleader>键到' 'remain q w y u i j k z x
+    let mapleader=","           " 映射<leader>键为',',默认'\' remain <Leader>y u i o p k c m
+    let maplocalleader=" "      " 映射<localleader>键到' 'remain w y u i j k z x
     nmap j gj
     nmap k gk
     inoremap jj <ESC>
@@ -211,6 +212,7 @@
 " }
 
 " Function {
+
     function! LinesOfCode()
         echo system('cloc --quiet '.bufname("%"))
     endfunction
@@ -224,6 +226,14 @@
         redraw!
     endfunction
     map <LocalLeader>r :call RangerChooser()<CR>
+
+    autocmd FileType unite call s:unite_settings()
+    function! s:unite_settings()
+        imap <buffer> <C-j> <Plug>(unite_select_next_line)
+        imap <buffer> <C-k> <Plug>(unite_select_previous_line)
+        nmap <buffer> <C-k> <C-w>k
+    endfunction
+
 " }
 
 " Plugins {
@@ -236,7 +246,7 @@
         let g:airline#extensions#tabline#tab_nr_type = 1
         let g:airline#extensions#tabline#show_tab_nr = 1
         let g:airline#extensions#tabline#show_tab_type = 1
-        let g:airline#extensions#tabline#buffer_nr_show = 1
+        let g:airline#extensions#tabline#buffer_nr_show = 0
 
         if g:airline_powerline_fonts != 1
             let g:airline_left_sep=''
@@ -347,7 +357,8 @@
 
     " Unite {
         nmap <silent> <Leader>f :Unite file -start-insert<cr>
-        nnoremap <LocalLeader>a :Unite menu:grep<CR>
+        nmap <silent> <Leader>fr :Unite file_mru -start-insert<cr>
+        nmap <silent> <Leader>b :Unite buffer<cr>
         nnoremap <LocalLeader>b :Unite menu:bookmarks<CR>
         nnoremap <LocalLeader>c :Unite menu:code<CR>
         nnoremap <LocalLeader>d :Unite menu:tabularize<CR>
@@ -358,11 +369,13 @@
         nnoremap <LocalLeader>m :Unite menu<cr>
         nnoremap <LocalLeader>n :Unite menu:navigation<CR>
         nnoremap <LocalLeader>p :Unite history/yank<cr>
+        nnoremap <LocalLeader>q :Unite register<cr>
         nnoremap <LocalLeader>s :Unite menu:searching<CR>
         nnoremap <LocalLeader>t :Unite menu:text<CR>
         nnoremap <LocalLeader>v :Unite menu:vim<CR>
         nnoremap <silent><Leader>a :Unite -silent -auto-preview -winheight=40 -no-quit grep<CR>
         nnoremap <silent><Leader>A :UniteWithCursorWord -silent -auto-preview -winheight=40 -no-quit grep<CR>
+        nnoremap <silent><Leader>c :Unite -silent -vertical -winwidth=40 -direction=topleft -toggle outline<CR>
 
         call unite#filters#matcher_default#use(['matcher_fuzzy'])
         call unite#filters#sorter_default#use(['sorter_rank'])
@@ -376,6 +389,7 @@
         let g:unite_source_history_yank_enable = 1
         let g:unite_enable_start_insert = 0
         let g:unite_force_overwrite_statusline = 0
+        let g:unite_data_directory = $HOME.'/.vim/.vimtmp/unite'
         let g:unite_source_buffer_time_format = '(%d-%m-%Y %H:%M:%S) '
         let g:unite_source_file_mru_time_format = '(%d-%m-%Y %H:%M:%S) '
         let g:unite_source_directory_mru_time_format = '(%d-%m-%Y %H:%M:%S) '
@@ -730,21 +744,6 @@
                 \'normal ,gS'],
             \]
 
-        let g:unite_source_menu_menus.grep = {
-            \ 'description' : '           search files
-                \                                           ⌘ <space>a',
-            \}
-        let g:unite_source_menu_menus.grep.command_candidates = [
-            \['▷ grep (ag → ack → grep)                                                 ⌘ ',
-                \'Unite -auto-preview -winheight=40 -no-quit grep'],
-            \['▷ grep current word                                                      ⌘ ',
-                \'UniteWithCursorWord -auto-preview -winheight=40 -no-quit grep'],
-            \['▷ find                                                                   ⌘ ',
-                \'Unite find'],
-            \['▷ vimgrep (very slow)                                                    ⌘ ',
-                \'Unite vimgrep'],
-            \]
-
         let g:unite_source_menu_menus.history = {
             \ 'description' : '        yanks, registers & history
                 \                             ⌘ <space>h',
@@ -756,6 +755,12 @@
                 \'Unite register'],
             \['▷ messages                                                               ⌘ ',
                 \'Unite output:messages'],
+            \['▷ search changes                                                         ⌘ ',
+                \'Unite change'],
+            \['▷ search jumps                                                           ⌘ ',
+                \'Unite jump'],
+            \['▷ search tasks                                                           ⌘ ,t',
+                \'TaskList'],
             \['▷ undo tree      (Undotree)                                              ⌘ ,q',
                 \'UndotreeToggle'],
             \]
@@ -767,16 +772,20 @@
         let g:unite_source_menu_menus.searching.command_candidates = [
             \['▷ search line                                                            ⌘ ',
                 \'Unite -auto-preview -start-insert line'],
-            \['▷ search word under the cursor                                           ⌘ ',
+            \['▷ grep (ag → ack → grep)                                                 ⌘ ',
+                \'Unite -auto-preview -winheight=40 -no-quit grep'],
+            \['▷ grep current word                                                      ⌘ ',
+                \'UniteWithCursorWord -auto-preview -winheight=40 -no-quit grep'],
+            \['▷ search word under the cursor in current buffer                         ⌘ ',
                 \'UniteWithCursorWord -no-split -auto-preview line'],
-            \['▷ search changes                                                         ⌘ ',
-                \'Unite change'],
-            \['▷ search jumps                                                           ⌘ ',
-                \'Unite jump'],
-            \['▷ search tasks                                                           ⌘ ,t',
-                \'TaskList'],
+            \['▷ search outlines & tags (ctags)                                         ⌘ ,c',
+                \'Unite -vertical -winwidth=40 -direction=topleft -toggle outline'],
+            \['▷ find                                                                   ⌘ ',
+                \'Unite find'],
+            \['▷ vimgrep (very slow)                                                    ⌘ ',
+                \'Unite vimgrep'],
             \['▷ trigger easymotion               (easymotion)                          ⌘ ,,',
-                \'normal ,,'],
+                \''],
             \]
 
         let g:unite_source_menu_menus.text = {
@@ -840,6 +849,8 @@
         let g:unite_source_menu_menus.vim.command_candidates = [
             \['▷ edit configuration file (vimrc)                                        ⌘ ',
                 \'edit $MYVIMRC'],
+            \['▷ choose colorscheme                                                     ⌘ ',
+                \'Unite colorscheme -auto-preview'],
             \['▷ mappings                                                               ⌘ ',
                 \'Unite mapping -start-insert'],
             \['▷ vim commands                                                           ⌘ ',
