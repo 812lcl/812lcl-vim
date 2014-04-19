@@ -13,6 +13,7 @@
     Bundle 'Shougo/unite.vim'
     Bundle 'Shougo/neomru.vim'
     Bundle 'Shougo/neocomplcache.vim'
+    Bundle 'Shougo/wildfire.vim'
     Bundle 'Shougo/vimproc.vim'
     Bundle 'Shougo/vimshell.vim'
     Bundle 'Shougo/unite-outline'
@@ -37,7 +38,7 @@
     Bundle 'Lokaltog/vim-easymotion'
     Bundle 'terryma/vim-multiple-cursors'
     Bundle 'airblade/vim-gitgutter'
-    Bundle 'huxiao/vim-bookmark'
+    Bundle 'kshenoy/vim-signature'
     Bundle 'SirVer/ultisnips'
     Bundle 'honza/vim-snippets'
     Bundle 'godlygeek/tabular'
@@ -48,6 +49,8 @@
     Bundle 'greyblake/vim-preview'
     Bundle "waylan/vim-markdown-extra-preview"
     Bundle 'yonchu/accelerated-smooth-scroll'
+    Bundle 'ianva/vim-youdao-translater'
+    Bundle 'nathanaelkane/vim-indent-guides'
     Bundle 'bling/vim-airline'
     Bundle 'klen/python-mode'
     Bundle 'Valloric/YouCompleteMe'
@@ -56,10 +59,6 @@
     Bundle "pangloss/vim-javascript"
     Bundle 'hail2u/vim-css3-syntax'
     Bundle 'elzr/vim-json'
-    Bundle 'tpope/vim-cucumber'
-    Bundle 'quentindecock/vim-cucumber-align-pipes'
-    Bundle 'ianva/vim-youdao-translater'
-    Bundle 'nathanaelkane/vim-indent-guides'
 
     " 代码存放在 vim script 上
     Bundle 'sudo.vim'
@@ -69,7 +68,6 @@
     Bundle 'a.vim'
     Bundle 'TaskList.vim'
     Bundle 'python.vim'
-    Bundle 'Puppet-Syntax-Highlighting'
 
     " 代码存放在其他地方
     " Bundle 'git://git.wincent.com/command-t.git'
@@ -127,17 +125,20 @@
     set backspace=indent,eol,start  " 退格可删除缩进和原有字符
     au VimResized * exe "normal! \<c-w>="
     au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
-    autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o " 下一行不自动添加注释
+    au FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o       " 下一行不自动添加注释
+    au BufLeave * let b:winview = winsaveview()
+    au BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif     " 切换buffer时保持光标所在行在窗口中到位置
 
 " }
 
 " Key (re)Mappings {
 
-    let mapleader=","           " 映射<leader>键为',',默认'\' remain <Leader>y u i o p k m
+    let mapleader=","           " 映射<leader>键为',',默认'\' remain <Leader>y u i o p
     let maplocalleader=" "      " 映射<localleader>键到' 'remain y u i j
     nmap j gj
     nmap k gk
     inoremap jj <ESC>
+    noremap <Leader>m ggVG
     nnoremap <silent> J :bp<CR>
     nnoremap <silent> K :bn<CR>
     noremap <silent><Leader>h :set hls! hls?<CR>
@@ -190,7 +191,7 @@
     set showmode                    " 显示当前mode
     set cursorline                  " 高亮当前行
     set list                        " 显示特殊符号
-    set listchars=tab:›\ ,trail:•,extends:#,nbsp:.
+    set listchars=tab:›\ ,trail:•,extends:❯,precedes:❮,nbsp:.
 
     hi clear SignColumn             " 标记列背景和主题背景匹配
     hi clear LineNr                 " 当前行列背景和主题背景匹配
@@ -329,18 +330,22 @@
         if filereadable("cscope.out")
             cs add cscope.out
         endif
-        nmap <Leader><Leader>g :cs find g <C-R>=expand("<cword>")<cr><cr>
-        nmap <Leader><Leader>c :cs find c <C-R>=expand("<cword>")<cr><cr>
-        nmap <Leader><Leader>d :cs find d <C-R>=expand("<cword>")<cr><cr>
-        nmap <Leader><Leader>s :cs find s <C-R>=expand("<cword>")<cr><cr>
-        nmap <Leader><Leader>4 :cs find t <C-R>=expand("<cword>")<cr><cr>
-        nmap <Leader><Leader>6 :cs find e <C-R>=expand("<cword>")<cr><cr>
-        nmap <Leader><Leader>7 :cs find f <C-R>=expand("<cfile>")<cr><cr>
-        nmap <Leader><Leader>8 :cs find i <C-R>=expand("<cfile>")<cr><cr>
+        nmap <Leader><Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+        nmap <Leader><Leader>1 :cs find g<Space>
+        nmap <Leader><Leader>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+        nmap <Leader><Leader>2 :cs find d<Space>
+        nmap <Leader><Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+        nmap <Leader><Leader>3 :cs find c<Space>
+        nmap <Leader><Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+        nmap <Leader><Leader>0 :cs find s<Space>
+        nmap <Leader><Leader>4 :cs find t <C-R>=expand("<cword>")<CR><CR>
+        nmap <Leader><Leader>6 :cs find e <C-R>=expand("<cword>")<CR><CR>
+        nmap <Leader><Leader>7 :cs find f <C-R>=expand("<cfile>")<CR><CR>
+        nmap <Leader><Leader>8 :cs find i <C-R>=expand("<cfile>")<CR><CR>
     " }
 
     " Tagbar {
-        nmap <silent> <Leader>e :TagbarToggle<cr>
+        nmap <silent> <Leader>e :TagbarToggle<CR>
         let g:tagbar_left = 1                   " 在右侧
         let g:tagbar_width = 25                 " 设置宽度
     " }
@@ -356,17 +361,13 @@
         let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
     " }
 
-    " vim-bookmark {
-        let g:vbookmark_bookmarkSaveFile = $HOME . '.vim/.vimtmp/vimbookmark'
-    " }
-
     " ColorV {
         let g:colorv_cache_file=$HOME.'/.vim/.vimtmp/vim_colorv_cache'
         let g:colorv_cache_fav=$HOME.'/.vim/.vimtmp/vim_colorv_cache_fav'
     " }
 
     " UndoTree {
-        nmap <silent> <Leader>q :UndotreeToggle<cr>
+        nmap <silent> <Leader>q :UndotreeToggle<CR>
         let g:undotree_SetFocusWhenToggle = 1
     " }
 
@@ -408,8 +409,8 @@
         hi SyntasticError ctermbg=red
         hi SyntasticWarning ctermbg=yellow
         nmap <Leader>r :SyntasticCheck<CR>:Errors<CR>
-        nmap <Leader>x :lnext<cr>
-        nmap <Leader>z :lpre<cr>
+        nmap <Leader>x :lnext<CR>
+        nmap <Leader>z :lpre<CR>
     " }
 
     " gitgutter {
@@ -422,16 +423,17 @@
     " }
 
     " Unite {
-        nmap <silent> <Leader>f :Unite file -start-insert<cr>
-        nmap <silent> <Leader>fr :Unite file_mru -start-insert<cr>
-        nmap <silent> <Leader>b :Unite buffer<cr>
-        nnoremap <LocalLeader>p :Unite history/yank<cr>
-        nnoremap <LocalLeader>q :Unite register<cr>
-        nnoremap <LocalLeader>z :Unite -silent -auto-preview -winheight=25 quickfix<cr>
-        nnoremap <LocalLeader>x :Unite -silent -auto-preview -winheight=25 location_list<cr>
+        nmap <silent> <Leader>f :Unite file -start-insert<CR>
+        nmap <silent> <Leader>fr :Unite file_mru -start-insert<CR>
+        nmap <silent> <Leader>b :Unite buffer<CR>
+        nnoremap <LocalLeader>p :Unite history/yank<CR>
+        nnoremap <LocalLeader>q :Unite register<CR>
+        nnoremap <LocalLeader>z :Unite -silent -auto-preview -winheight=25 quickfix<CR>
+        nnoremap <LocalLeader>x :Unite -silent -auto-preview -winheight=25 location_list<CR>
         nnoremap <silent><Leader>a :Unite -silent -auto-preview -winheight=25 -no-quit grep<CR>
         nnoremap <silent><Leader>A :UniteWithCursorWord -silent -auto-preview -winheight=25 -no-quit grep<CR>
-        nnoremap <silent><Leader>c :Unite -silent -vertical -winwidth=40 -direction=topleft -toggle outline<CR>
+        nnoremap <silent><Leader>c :Unite -start-insert -silent -vertical -winwidth=40 -direction=topleft -toggle outline<CR>
+        nnoremap <silent><Leader>k :Unite -silent -auto-preview -winheight=25 mark<CR>
 
         call unite#filters#matcher_default#use(['matcher_fuzzy'])
         call unite#filters#sorter_default#use(['sorter_rank'])
@@ -514,8 +516,8 @@
     " }
 
     " Singlecompile {
-        nmap <Leader>g :SCCompileRun<cr><cr><cr>
-        nmap <Leader>v :SCViewResult<cr>
+        nmap <Leader>g :SCCompileRun<CR><CR><CR>
+        nmap <Leader>v :SCViewResult<CR>
     " }
 
     " Tabularize {
@@ -546,7 +548,7 @@
             let g:pymode = 0
         endif
         let g:pymode_lint_checker = "pyflakes"
-        let g:pymode_utils_whitespaces = 0
+        let g:pymode_utils_whiteSpaces = 0
         let g:pymode_options = 0
     " }
 
@@ -601,11 +603,11 @@
 
 " Unite Menu {"{{{
         let g:unite_source_menu_menus = {}
-        nnoremap <LocalLeader>m :Unite menu<cr>
+        nnoremap <LocalLeader>m :Unite menu<CR>
 
         let g:unite_source_menu_menus.navigation = {
             \ 'description' : '     navigate by buffers, tabs & windows
-                \                    ⌘ <space>n',
+                \                    ⌘ <Space>n',
             \}
         let g:unite_source_menu_menus.navigation.command_candidates = [
             \['▷ buffers                                                                ⌘ ,b',
@@ -614,9 +616,9 @@
                 \'Unite tab'],
             \['▷ windows                                                                ⌘ ',
                 \'Unite window'],
-            \['▷ location list                                                          ⌘ <space>x',
+            \['▷ location list                                                          ⌘ <Space>x',
                 \'Unite location_list'],
-            \['▷ quickfix                                                               ⌘ <space>z',
+            \['▷ quickfix                                                               ⌘ <Space>z',
                 \'Unite quickfix'],
             \['▷ next buffer                                                            ⌘ K',
                 \'bnext'],
@@ -645,27 +647,29 @@
 
         let g:unite_source_menu_menus.bookmarks = {
             \ 'description' : '      bookmarks
-                \                                              ⌘ <space>b',
+                \                                              ⌘ <Space>b',
             \}
         let g:unite_source_menu_menus.bookmarks.command_candidates = [
             \['▷ Unite open bookmarks                                                   ⌘ ',
                 \'Unite bookmark:*'],
             \['▷ Unite add bookmark                                                     ⌘ ',
                 \'UniteBookmarkAdd'],
-            \['▷ Text add bookmark                                                      ⌘ mm',
-                \'VbookmarkToggle'],
-            \['▷ Next bookmark                                                          ⌘ mn',
-                \'VbookmarkNext'],
-            \['▷ Prev bookmark                                                          ⌘ mp',
-                \'VbookmarkPrevious'],
-            \['▷ Clear bookmark                                                         ⌘ ma',
-                \'VbookmarkClearAll'],
+            \['▷ Text add bookmark                                                      ⌘ m[a-zA-Z]',
+                \'normal m,'],
+            \['▷ Add next bookmark                  (vim-signature)                     ⌘ m,',
+                \'normal m,'],
+            \['▷ Next bookmark                      (vim-signature)                     ⌘ ]`',
+                \'normal ]`'],
+            \['▷ Prev bookmark                      (vim-signature)                     ⌘ [`',
+                \'normal [`'],
+            \['▷ Clear bookmark                     (vim-signature)                     ⌘ m<Space>',
+                \'normal m '],
             \]
         nnoremap <LocalLeader>b :Unite menu:bookmarks<CR>
 
         let g:unite_source_menu_menus.cscope = {
             \ 'description' : '         cscope
-                \                                                 ⌘ <space>e',
+                \                                                 ⌘ <Space>e',
             \}
         let g:unite_source_menu_menus.cscope.command_candidates = [
             \['▷ find definition                            (cscope)                    ⌘ ,,g',
@@ -689,7 +693,7 @@
 
         let g:unite_source_menu_menus.code = {
             \ 'description' : '           coding
-                \                                                 ⌘ <space>c',
+                \                                                 ⌘ <Space>c',
             \}
         let g:unite_source_menu_menus.code.command_candidates = [
             \['▷ Count lines of code                                                    ⌘ ',
@@ -725,7 +729,7 @@
 
         let g:unite_source_menu_menus.files = {
             \ 'description' : '          files & dirs
-                \                                           ⌘ <space>f',
+                \                                           ⌘ <Space>f',
             \}
         let g:unite_source_menu_menus.files.command_candidates = [
             \['▷ open file                                                              ⌘ ,f',
@@ -757,7 +761,7 @@
 
         let g:unite_source_menu_menus.git = {
             \ 'description' : '            admin git repositories
-                \                                 ⌘ <space>g',
+                \                                 ⌘ <Space>g',
             \}
         let g:unite_source_menu_menus.git.command_candidates = [
             \['▷ git init                                                               ⌘ ,gn',
@@ -813,12 +817,12 @@
 
         let g:unite_source_menu_menus.history = {
             \ 'description' : '        yanks, registers & history
-                \                             ⌘ <space>h',
+                \                             ⌘ <Space>h',
             \}
         let g:unite_source_menu_menus.history.command_candidates = [
-            \['▷ yanks                                                                  ⌘ <space>p',
+            \['▷ yanks                                                                  ⌘ <Space>p',
                 \'Unite history/yank'],
-            \['▷ registers                                                              ⌘ <space>q',
+            \['▷ registers                                                              ⌘ <Space>q',
                 \'Unite register'],
             \['▷ messages                                                               ⌘ ',
                 \'Unite output:messages'],
@@ -835,21 +839,21 @@
 
         let g:unite_source_menu_menus.searching = {
             \ 'description' : '      searchs inside the current buffer
-                \                      ⌘ <space>s',
+                \                      ⌘ <Space>s',
             \}
         let g:unite_source_menu_menus.searching.command_candidates = [
             \['▷ search line                                                            ⌘ ',
                 \'Unite -auto-preview -start-insert line'],
             \['▷ grep (ag → ack → grep)                                                 ⌘ ,a',
-                \'Unite -auto-preview -winheight=40 -no-quit grep'],
+                \'Unite -auto-preview -winheight=25 -no-quit grep'],
             \['▷ grep current word                                                      ⌘ ,A',
-                \'UniteWithCursorWord -auto-preview -winheight=40 -no-quit grep'],
+                \'UniteWithCursorWord -auto-preview -winheight=25 -no-quit grep'],
             \['▷ search word under the cursor in current buffer                         ⌘ ',
                 \'UniteWithCursorWord -no-split -auto-preview line'],
             \['▷ search outlines & tags (ctags)                                         ⌘ ,c',
-                \'Unite -vertical -winwidth=40 -direction=topleft -toggle outline'],
-            \['▷ search marks                                                           ⌘ ',
-                \'Unite -auto-preview mark'],
+                \'Unite -vertical -winwidth=40 -start-insert -direction=topleft -toggle outline'],
+            \['▷ search marks                                                           ⌘ ,k',
+                \'Unite -auto-preview -winheight=25 mark'],
             \['▷ search folds                                                           ⌘ ',
                 \'Unite -vertical -winwidth=30 -auto-highlight fold'],
             \['▷ find                                                                   ⌘ ',
@@ -863,7 +867,7 @@
 
         let g:unite_source_menu_menus.text = {
             \ 'description' : '           text edition
-                \                                           ⌘ <space>t',
+                \                                           ⌘ <Space>t',
             \}
         let g:unite_source_menu_menus.text.command_candidates = [
             \['▷ toggle search results highlight                                        ⌘ ,h',
@@ -885,7 +889,7 @@
             \['▷ Translate cursor word                (vim-youdao-translater)           ⌘ ,d',
                 \'Ydc'],
             \['▷ toggle surround in visualmode        (surround)                        ⌘ S',
-                \''],
+                \'visual S'],
             \['▷ add surroundings in visualmode       (surround)                        ⌘ ys',
                 \''],
             \['▷ change surroundings in visualmode    (surround)                        ⌘ cs',
@@ -897,7 +901,7 @@
 
         let g:unite_source_menu_menus.tabularize = {
             \ 'description' : '     tabularize
-                \                                             ⌘ <space>d',
+                \                                             ⌘ <Space>d',
             \}
         let g:unite_source_menu_menus.tabularize.command_candidates = [
             \['▷ Tabularize &                                                           ⌘ <Space>&',
@@ -919,7 +923,7 @@
 
         let g:unite_source_menu_menus.vim = {
             \ 'description' : '            vim
-                \                                                    ⌘ <space>v',
+                \                                                    ⌘ <Space>v',
             \}
         let g:unite_source_menu_menus.vim.command_candidates = [
             \['▷ edit configuration file (vimrc)                                        ⌘ ',
@@ -951,7 +955,7 @@
 
         let g:unite_source_menu_menus.colorv = {
             \ 'description' : '         color management
-                \                                       ⌘ <space>l',
+                \                                       ⌘ <Space>l',
             \}
         let g:unite_source_menu_menus.colorv.command_candidates = [
             \['▷ open colorv                                                            ⌘ ,cv',
@@ -984,11 +988,11 @@
                 \'exe "ColorVTurn2 " " ".input("Color 1 (hex): ")
                 \" ".input("Color 2 (hex): ")'],
             \]
-        nnoremap <LocalLeader>l :Unite menu:colorv<cr>
+        nnoremap <LocalLeader>l :Unite menu:colorv<CR>
 
         let g:unite_source_menu_menus.markdown = {
             \ 'description' : '       preview markdown extra docs
-                \                            ⌘ <space>k',
+                \                            ⌘ <Space>k',
             \}
         let g:unite_source_menu_menus.markdown.command_candidates = [
             \['▷ preview                                                                ⌘ ',
@@ -1000,7 +1004,7 @@
 
         let g:unite_source_menu_menus.web = {
             \ 'description' : '            web development
-                \                                        ⌘ <space>w',
+                \                                        ⌘ <Space>w',
             \}
         let g:unite_source_menu_menus.web.command_candidates = [
             \['▷ show emmet tutorial                                                    ⌘ ',

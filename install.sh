@@ -38,11 +38,6 @@ then
     mkdir -p $HOME/.vim/.vimtmp/unite
 fi
 
-if [ ! -e $HOME/.vim/.vimtmp/vimbookmark ]
-then
-    touch $HOME/.vim/.vimtmp/vimbookmark
-fi
-
 echo "Step3: install vundle"
 if [ ! -e $VIM_DIR/bundle/vundle ]; then
     echo "Installing Vundle"
