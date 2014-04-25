@@ -17,10 +17,8 @@ today=`date +%Y%m%d`
 for i in $HOME/.vim $HOME/.vimrc; do [ -e $i ] && [ ! -L $i ] && mv $i $i.$today; done
 for i in $HOME/.vim $HOME/.vimrc; do [ -L $i ] && unlink $i; done
 
-echo "Step2: set up symlinks and copy files"
-cp -rf $CURRENT_DIR/static $VIM_DIR/ 
-cp -rf $CURRENT_DIR/syntax $VIM_DIR/ 
-cp $CURRENT_DIR/vimrc-lcl $VIM_DIR/
+echo "Step2: set up symlinks"
+lnif $CURRENT_DIR $VIM_DIR
 lnif $VIM_DIR/vimrc-lcl $HOME/.vimrc
 
 if [ ! -d $HOME/.vim/bundle ]

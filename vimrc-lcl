@@ -13,12 +13,12 @@
     Bundle 'Shougo/unite.vim'
     Bundle 'Shougo/neomru.vim'
     Bundle 'Shougo/neocomplcache.vim'
+    Bundle 'Shougo/neosnippet.vim'
     Bundle 'Shougo/wildfire.vim'
     Bundle 'Shougo/vimproc.vim'
     Bundle 'Shougo/vimshell.vim'
     Bundle 'Shougo/unite-outline'
     Bundle "osyo-manga/unite-filetype"
-    Bundle "osyo-manga/unite-fold"
     Bundle "osyo-manga/unite-quickfix"
     Bundle 'ujihisa/unite-colorscheme'
     Bundle "ujihisa/unite-locate"
@@ -40,6 +40,7 @@
     Bundle 'airblade/vim-gitgutter'
     Bundle 'kshenoy/vim-signature'
     Bundle 'SirVer/ultisnips'
+    Bundle 'JazzCore/neocomplcache-ultisnips'
     Bundle 'honza/vim-snippets'
     Bundle 'godlygeek/tabular'
     Bundle 'gorodinskiy/vim-coloresque'
@@ -112,6 +113,7 @@
     set encoding=utf-8              " 编码，使汉语正常显示
     set termencoding=utf-8
     set fileencodings=utf-8,gb2312,gbk,gb18030
+    set dict+=$HOME/.vim/static/dict_with_cases
 
 " }
 
@@ -123,6 +125,10 @@
     set softtabstop=4               " 退格删除缩进
     set autoindent                  " 与前一行同样等级缩进
     set backspace=indent,eol,start  " 退格可删除缩进和原有字符
+    au FileType ruby setlocal ts=2 sts=2 sw=2 et
+    au FileType yaml setlocal ts=2 sts=2 sw=2 et
+    au FileType html setlocal ts=2 sts=2 sw=2 et
+    au FileType css setlocal ts=2 sts=2 sw=2 et
     au VimResized * exe "normal! \<c-w>="
     au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
     au FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o       " 下一行不自动添加注释
@@ -131,19 +137,18 @@
 
 " }
 
-" Key (re)Mappings {
-
-    let mapleader=","           " 映射<leader>键为',',默认'\' remain <Leader>y u i o p
-    let maplocalleader=" "      " 映射<localleader>键到' 'remain y u i j
+    let mapleader=","           " 映射<leader>键,默认'\'   remain <Leader>u i o p
+    let maplocalleader=" "      " 映射<localleader>键 remain <LocalLeader>u i
     nmap j gj
     nmap k gk
     inoremap jj <ESC>
     noremap <Leader>m ggVG
     nnoremap <silent> J :bp<CR>
     nnoremap <silent> K :bn<CR>
-    noremap <silent><Leader>h :set hls! hls?<CR>
+    noremap <silent><Leader>h :noh<CR>
     noremap <silent><Leader>s :set rnu! rnu?<CR>
     noremap <silent><Leader>l :set list! list?<CR>
+    noremap <silent><Leader>y :set spell! spell?<CR>
     nnoremap <LocalLeader>o @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
 
     " 更方便窗口间移动
@@ -225,11 +230,51 @@
 
 " Function {
 
-    function! LinesOfCode()
+    function! Preserve(command)
+        let _s=@/
+        let l = line(".")
+        let c = col(".")
+        execute a:command
+        let @/=_s
+        call cursor(l, c)
+    endfunction
+    nmap _$ :call Preserve("%s/\\s\\+$//e")<CR>
+    nmap <Leader>= :call Preserve("normal gg=G")<CR>
+
+    function! s:VSetSearch()
+        let temp = @s
+        norm! gv"sy
+        let @/ = '\V' . substitute(escape(@s, '/\'), '\n', '\\n', 'g')
+        let @s = temp
+    endfunction
+    xnoremap * :<C-u>call <SID>VSetSearch()<CR>/<C-R>=@/<CR><CR>
+    xnoremap # :<C-u>call <SID>VSetSearch()<CR>?<C-R>=@/<CR><CR>
+
+    function! g:ToggleColorColumn()
+        if &colorcolumn != ''
+            setlocal colorcolumn&
+        else
+            setlocal colorcolumn=80
+        endif
+    endfunction
+    nnoremap <LocalLeader>y :call g:ToggleColorColumn()<CR>
+
+    command! -nargs=0 -bar Qargs execute 'args' QuickfixFilenames()     " :Qargs 提取quicklist中文件为arglist
+    function! QuickfixFilenames()
+      let buffer_numbers = {}
+      for quickfix_item in getqflist()
+        let buffer_numbers[quickfix_item['bufnr']] = bufname(quickfix_item['bufnr'])
+      endfor
+      return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
+    endfunction
+
+    " 一下function有外部依赖
+
+    function! LinesOfCode()                         " 统计代码行数，需要cloc
         echo system('cloc --quiet '.bufname("%"))
     endfunction
 
-    function! RangerChooser()
+    function! RangerChooser()                       " Ranger文件管理器
         exec "silent !ranger --choosefile=/tmp/chosenfile " . expand("%:p:h")
         if filereadable('/tmp/chosenfile')
             exec 'edit ' . system('cat /tmp/chosenfile')
@@ -299,7 +344,7 @@
 
     " vim-airline {
         set laststatus=2                                    " 显示状态栏
-        let g:airline_theme='powerlineish'                     " 设置主题
+        let g:airline_theme='powerlineish'                  " 设置主题
         let g:airline_powerline_fonts = 0                   " 是否使用powerline字体
         let g:airline#extensions#tabline#enabled = 1        " 顶部tab栏显示
         let g:airline#extensions#tabline#tab_nr_type = 1
@@ -346,14 +391,14 @@
 
     " Tagbar {
         nmap <silent> <Leader>e :TagbarToggle<CR>
-        let g:tagbar_left = 1                   " 在右侧
+        let g:tagbar_left = 0                   " 在右侧
         let g:tagbar_width = 25                 " 设置宽度
     " }
 
     " NerdTree {
         map <Leader>w :NERDTreeToggle<CR>
         map <leader>wf :NERDTreeFind<CR>
-        let NERDTreeWinPos=1                    " 在左侧
+        let NERDTreeWinPos=0                    " 在左侧
         let NERDTreeWinSize=25                  " 设置宽度
         let NERDTreeShowHidden=1                " 显示隐藏文件
         let NERDTreeQuitOnOpen=1                " 打开后退出NERDTree
@@ -420,6 +465,7 @@
         let g:gitgutter_sign_column_always = 1
         nmap gh <Plug>GitGutterNextHunk
         nmap hg <Plug>GitGutterPrevHunk
+        nmap <LocalLeader>d <Plug>GitGutterPreviewHunk
     " }
 
     " Unite {
@@ -493,7 +539,6 @@
                     \Unite -no-quit quickfix'<CR>
         nnoremap <Leader>ggt :exe 'silent Glog -S='.input("Pattern: ").' <Bar>
                     \Unite -no-quit quickfix'<CR>
-
         nnoremap <Leader>ggc :silent! Ggrep -i<Space>
         nnoremap <Leader>gcd :Gcd<CR>
         nnoremap <Leader>glc :Glcd<CR>
@@ -506,14 +551,6 @@
         endif
         noremap <Leader>dq :Gdiffoff<CR>
     "}
-
-    " UltiSnips {
-        let g:UltiSnipsExpandTrigger = "<c-j>"
-    " }
-
-    " TaskList {
-        map <unique> <Leader>t <Plug>TaskList
-    " }
 
     " Singlecompile {
         nmap <Leader>g :SCCompileRun<CR><CR><CR>
@@ -558,12 +595,12 @@
         noremap <Leader>de :Yde<CR>
     " }
 
-    " AutoComple {
+    " OmniComplete {
         autocmd FileType c set omnifunc=ccomplete#Complete
         autocmd FileType java set omnifunc=javacomplete#Complete
         autocmd FileType python set omnifunc=pythoncomplete#Complete
         autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-        autocmd FileType ruby set omnifunc=rubycomplete#CompletePHP
+        autocmd FileType ruby set omnifunc=rubycomplete#Complete
         autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
         autocmd FileType html,markdown set omnifunc=htmlcomplete#CompleteTags
         autocmd FileType css set omnifunc=csscomplete#CompleteCSS
@@ -571,17 +608,41 @@
         autocmd FileType java inoremap <buffer> . .<C-X><C-O><C-P>
     " }
 
+"    " neocomplete {
+"        au Filetype c,cpp,java,python let g:neocomplete#enable_at_startup = 0
+"        let g:acp_enableAtStartup = 0
+"        let g:neocomplete#enable_at_startup = 1
+"        let g:neocomplete#enable_smart_case = 1
+"        let g:neocomplete#sources#syntax#min_keyword_length = 3
+"        let g:neocomplete#enable_cursor_hold_i = 1
+"        let g:neocomplete#auto_completion_start_length = 2
+"        let g:neocomplete#enable_auto_delimiter = 1
+"        let g:neocomplete#max_list = 15
+"        let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+"        let g:neocomplete#sources#dictionary#dictionaries = {'_' : $HOME . "/.vim/static/dict_with_cases"}
+"
+"        "let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+"    " }
+
     " neocomplcache {
-        let g:neocomplcache_enable_at_startup = 1
         au Filetype c,cpp,java,python let g:neocomplcache_enable_at_startup = 0
-        set dict+=$HOME/.vim/static/dict_with_cases
-        let g:neocomplcache_dictionary_filetype_lists = {'_' : $HOME . "/.vim/static/english_dict"}
-        let g:neocomplcache_auto_completion_start_length = 2
+        let g:neocomplcache_max_list = 15
+        let g:neocomplcache_enable_at_startup = 1
+        let g:neocomplcache_enable_camel_case_completion = 1
+        let g:neocomplcache_enable_underbar_completion = 1
         let g:neocomplcache_enable_smart_case = 1
+        let g:neocomplcache_enable_cursor_hold_i = 1
+        let g:neocomplcache_auto_completion_start_length = 1
+        let g:neocomplcache_enable_auto_delimiter = 1
         let g:neocomplcache_enable_fuzzy_completion = 1         " 开启模糊匹配
-        let g:neocomplcache_fuzzy_completion_start_length = 2   " 3个字母后开启模糊匹配
-        let g:neocomplcache_min_syntax_length = 3
+        let g:neocomplcache_fuzzy_completion_start_length = 3   " 3个字母后开启模糊匹配
         let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+        let g:neocomplcache_dictionary_filetype_lists = {'_' : $HOME . "/.vim/static/dict_with_cases"}
+
+        let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+        let g:neosnippet#disable_runtime_snippets = {
+        \   '_' : 1,
+        \ }
     " }
 
     " YouCompleteMe {
@@ -589,12 +650,25 @@
         let g:ycm_confirm_extra_conf = 0                " 不用每次提示加载.ycm_extra_conf.py文件
         let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/cpp/ycm/.ycm_extra_conf.py'
         let g:ycm_show_diagnostics_ui = 0               " 关闭ycm的syntastic
-        let g:ycm_filetype_whitelist = {'c' : 1, 'cpp' : 1, 'java' : 1, 'python' : 1}
+        let g:ycm_filetype_whitelist = {'c': 1, 'cpp': 1, 'java': 1, 'python': 1}
         let g:ycm_complete_in_comments = 1              " 评论中也应用补全
         let g:ycm_min_num_of_chars_for_completion = 2   " 两个字开始补全
         let g:ycm_seed_identifiers_with_syntax = 1
+        let g:ycm_collect_identifiers_from_tags_files = 1
         let g:ycm_key_invoke_completion = '<C-Space>'
-        let g:ycm_semantic_triggers =  {'c' : ['->', '.'], 'objc' : ['->', '.'], 'ocaml' : ['.', '#'], 'cpp,objcpp' : ['->', '.', '::'], 'php' : ['->', '::'], 'cs,java,javascript,vim,coffee,python,scala,go' : ['.'], 'ruby' : ['.', '::']}
+        let g:UltiSnipsExpandTrigger = "<c-j>"          " ultisnips兼容
+        let g:ycm_semantic_triggers = {
+            \ 'c' : ['->', '.'],
+            \ 'objc' : ['->', '.'],
+            \ 'cpp,objcpp' : ['->', '.', '::'],
+            \ 'ocaml' : ['.', '#'],
+            \ 'perl' : ['->'],
+            \ 'php' : ['->', '::'],
+            \ 'cs,java,javascript,vim,coffee,python,scala,go' : ['.'],
+            \ 'ruby' : ['.', '::'],
+            \ 'lua' : ['.', ':'],
+            \ 'erlang' : [':'],
+            \ }
         nnoremap <Leader>n :YcmForceCompileAndDiagnostics<CR>
         nnoremap <Leader>j :YcmCompleter GoToDefinitionElseDeclaration<CR>
     " }
@@ -851,11 +925,9 @@
             \['▷ search word under the cursor in current buffer                         ⌘ ',
                 \'UniteWithCursorWord -no-split -auto-preview line'],
             \['▷ search outlines & tags (ctags)                                         ⌘ ,c',
-                \'Unite -vertical -winwidth=40 -start-insert -direction=topleft -toggle outline'],
+                \'Unite -vertical -winwidth=25 -start-insert -direction=topleft -toggle outline'],
             \['▷ search marks                                                           ⌘ ,k',
                 \'Unite -auto-preview -winheight=25 mark'],
-            \['▷ search folds                                                           ⌘ ',
-                \'Unite -vertical -winwidth=30 -auto-highlight fold'],
             \['▷ find                                                                   ⌘ ',
                 \'Unite find'],
             \['▷ vimgrep (very slow)                                                    ⌘ ',
@@ -876,8 +948,10 @@
                 \'normal ,s'],
             \['▷ show hidden chars                                                      ⌘ ,l',
                 \'normal ,l'],
-            \['▷ toggle fold                                                            ⌘ <Tab>',
-                \'normal <Tab>'],
+            \['▷ spell check                                                            ⌘ ,y',
+                \'normal ,y'],
+            \['▷ toggle fold                                                            ⌘ <Space>o',
+                \'normal <Space>o'],
             \['▷ multiple-cursors: next               (vim-multiple-cursors)            ⌘ <C-n>',
                 \'normal <C-n>'],
             \['▷ multiple-cursors: prev               (vim-multiple-cursors)            ⌘ <C-p>',
@@ -919,7 +993,7 @@
             \['▷ Tabularize <Bar>                                                       ⌘ <Space><Bar>',
                 \'Tabularize /<Bar>'],
             \]
-        nnoremap <LocalLeader>d :Unite menu:tabularize<CR>
+        nnoremap <LocalLeader>j :Unite menu:tabularize<CR>
 
         let g:unite_source_menu_menus.vim = {
             \ 'description' : '            vim
