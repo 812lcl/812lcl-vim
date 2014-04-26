@@ -10,13 +10,15 @@
     Bundle 'tpope/vim-fugitive'
     Bundle 'tpope/vim-surround'
     Bundle 'tpope/vim-markdown'
-    Bundle 'Shougo/unite.vim'
-    Bundle 'Shougo/neomru.vim'
+    Bundle 'honza/vim-snippets'
+    Bundle 'SirVer/ultisnips'
+    Bundle 'JazzCore/neocomplcache-ultisnips'
     Bundle 'Shougo/neocomplcache.vim'
-    Bundle 'Shougo/neosnippet.vim'
     Bundle 'Shougo/wildfire.vim'
     Bundle 'Shougo/vimproc.vim'
     Bundle 'Shougo/vimshell.vim'
+    Bundle 'Shougo/unite.vim'
+    Bundle 'Shougo/neomru.vim'
     Bundle 'Shougo/unite-outline'
     Bundle "osyo-manga/unite-filetype"
     Bundle "osyo-manga/unite-quickfix"
@@ -24,13 +26,13 @@
     Bundle "ujihisa/unite-locate"
     Bundle "tsukkee/unite-help"
     Bundle "tacroe/unite-mark"
+    Bundle "mattn/unite-gist"
+    Bundle 'mattn/gist-vim'
+    Bundle 'mattn/webapi-vim'
+    Bundle "mattn/emmet-vim"
     Bundle 'scrooloose/syntastic'
     Bundle 'scrooloose/nerdtree'
     Bundle 'scrooloose/nerdcommenter'
-    Bundle "mattn/emmet-vim"
-    Bundle 'mattn/webapi-vim'
-    Bundle 'mattn/gist-vim'
-    Bundle "mattn/unite-gist"
     Bundle 'kien/ctrlp.vim'
     Bundle 'majutsushi/tagbar'
     Bundle 'mbbill/undotree'
@@ -39,9 +41,6 @@
     Bundle 'terryma/vim-multiple-cursors'
     Bundle 'airblade/vim-gitgutter'
     Bundle 'kshenoy/vim-signature'
-    Bundle 'SirVer/ultisnips'
-    Bundle 'JazzCore/neocomplcache-ultisnips'
-    Bundle 'honza/vim-snippets'
     Bundle 'godlygeek/tabular'
     Bundle 'gorodinskiy/vim-coloresque'
     Bundle 'Rykka/colorv.vim'
@@ -620,8 +619,6 @@
 "        let g:neocomplete#max_list = 15
 "        let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 "        let g:neocomplete#sources#dictionary#dictionaries = {'_' : $HOME . "/.vim/static/dict_with_cases"}
-"
-"        "let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
 "    " }
 
     " neocomplcache {
@@ -638,11 +635,6 @@
         let g:neocomplcache_fuzzy_completion_start_length = 3   " 3个字母后开启模糊匹配
         let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
         let g:neocomplcache_dictionary_filetype_lists = {'_' : $HOME . "/.vim/static/dict_with_cases"}
-
-        let g:neosnippet#disable_runtime_snippets = { '_' : 1, }
-        let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
-        let g:UltiSnipsExpandTrigger = "<C-j>"          " <C-j>触发ultisnips补全代码段
-        imap <C-k> <Plug>(neosnippet_expand_or_jump)    " <C_K>触发snippets补全代码段
     " }
 
     " YouCompleteMe {
@@ -656,6 +648,7 @@
         let g:ycm_seed_identifiers_with_syntax = 1
         let g:ycm_collect_identifiers_from_tags_files = 1
         let g:ycm_key_invoke_completion = '<C-Space>'
+        let g:UltiSnipsExpandTrigger = "<C-j>"          " <C-j>代替<Tab>触发ultisnips补全代码段
         let g:ycm_semantic_triggers = {
             \ 'c' : ['->', '.'],
             \ 'objc' : ['->', '.'],
