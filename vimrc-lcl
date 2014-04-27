@@ -20,11 +20,9 @@
     Bundle 'Shougo/unite.vim'
     Bundle 'Shougo/neomru.vim'
     Bundle 'Shougo/unite-outline'
-    Bundle "osyo-manga/unite-filetype"
     Bundle "osyo-manga/unite-quickfix"
     Bundle 'ujihisa/unite-colorscheme'
     Bundle "ujihisa/unite-locate"
-    Bundle "tsukkee/unite-help"
     Bundle "tacroe/unite-mark"
     Bundle "mattn/unite-gist"
     Bundle 'mattn/gist-vim'
@@ -36,17 +34,14 @@
     Bundle 'kien/ctrlp.vim'
     Bundle 'majutsushi/tagbar'
     Bundle 'mbbill/undotree'
-    Bundle 'xuhdev/SingleCompile'
     Bundle 'Lokaltog/vim-easymotion'
     Bundle 'terryma/vim-multiple-cursors'
     Bundle 'airblade/vim-gitgutter'
     Bundle 'kshenoy/vim-signature'
     Bundle 'godlygeek/tabular'
     Bundle 'gorodinskiy/vim-coloresque'
-    Bundle 'Rykka/colorv.vim'
     Bundle 'flazz/vim-colorschemes'
     Bundle 'altercation/vim-colors-solarized'
-    Bundle 'greyblake/vim-preview'
     Bundle "waylan/vim-markdown-extra-preview"
     Bundle 'yonchu/accelerated-smooth-scroll'
     Bundle 'ianva/vim-youdao-translater'
@@ -290,53 +285,6 @@
         nmap <buffer> <C-k> <C-w>k
     endfunction
 
-    function! GetColorFormat()
-        let formats = {'r' : 'RGB',
-                      \'n' : 'NAME',
-                      \'s' : 'HEX',
-                      \'ar': 'RGBA',
-                      \'pr': 'RGBP',
-                      \'pa': 'RGBAP',
-                      \'m' : 'CMYK',
-                      \'l' : 'HSL',
-                      \'la' : 'HSLA',
-                      \'h' : 'HSV',
-                      \}
-        let formats_menu = ["\n"]
-        for [k, v] in items(formats)
-            call add(formats_menu, "  ".k."\t".v."\n")
-        endfor
-        let fsel = get(formats, input('Choose a format: '.join(formats_menu).'? '))
-        return fsel
-    endfunction
-
-    function! GetColorMethod()
-        let methods = {
-                       \'h' : 'Hue',
-                       \'s' : 'Saturation',
-                       \'v' : 'Value',
-                       \'m' : 'Monochromatic',
-                       \'a' : 'Analogous',
-                       \'3' : 'Triadic',
-                       \'4' : 'Tetradic',
-                       \'n' : 'Neutral',
-                       \'c' : 'Clash',
-                       \'q' : 'Square',
-                       \'5' : 'Five-Tone',
-                       \'6' : 'Six-Tone',
-                       \'2' : 'Complementary',
-                       \'p' : 'Split-Complementary',
-                       \'l' : 'Luma',
-                       \'g' : 'Turn-To',
-                       \}
-        let methods_menu = ["\n"]
-        for [k, v] in items(methods)
-            call add(methods_menu, "  ".k."\t".v."\n")
-        endfor
-        let msel = get(methods, input('Choose a method: '.join(methods_menu).'? '))
-        return msel
-    endfunction
-
 " }
 
 " Plugins {
@@ -403,11 +351,6 @@
         let NERDTreeQuitOnOpen=1                " 打开后退出NERDTree
         let NERDTreeShowBookmarks=1             " 显示书签
         let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
-    " }
-
-    " ColorV {
-        let g:colorv_cache_file=$HOME.'/.vim/.vimtmp/vim_colorv_cache'
-        let g:colorv_cache_fav=$HOME.'/.vim/.vimtmp/vim_colorv_cache_fav'
     " }
 
     " UndoTree {
@@ -551,11 +494,6 @@
         noremap <Leader>dq :Gdiffoff<CR>
     "}
 
-    " Singlecompile {
-        nmap <Leader>g :SCCompileRun<CR><CR><CR>
-        nmap <Leader>v :SCViewResult<CR>
-    " }
-
     " Tabularize {
         nmap <LocalLeader>& :Tabularize /&<CR>
         vmap <LocalLeader>& :Tabularize /&<CR>
@@ -613,28 +551,24 @@
 "        let g:neocomplete#enable_at_startup = 1
 "        let g:neocomplete#enable_smart_case = 1
 "        let g:neocomplete#sources#syntax#min_keyword_length = 3
-"        let g:neocomplete#enable_cursor_hold_i = 1
-"        let g:neocomplete#auto_completion_start_length = 2
 "        let g:neocomplete#enable_auto_delimiter = 1
 "        let g:neocomplete#max_list = 15
-"        let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-"        let g:neocomplete#sources#dictionary#dictionaries = {'_' : $HOME . "/.vim/static/dict_with_cases"}
+"        let g:neocomplete#sources#dictionary#dictionaries = {'_' : $HOME.'/.vim/static/dict_with_cases'}
 "    " }
 
     " neocomplcache {
         au Filetype c,cpp,java,python let g:neocomplcache_enable_at_startup = 0
+        let g:acp_enableAtStartup = 0
         let g:neocomplcache_max_list = 15
         let g:neocomplcache_enable_at_startup = 1
         let g:neocomplcache_enable_camel_case_completion = 1
         let g:neocomplcache_enable_underbar_completion = 1
         let g:neocomplcache_enable_smart_case = 1
-        let g:neocomplcache_enable_cursor_hold_i = 1
-        let g:neocomplcache_auto_completion_start_length = 1
         let g:neocomplcache_enable_auto_delimiter = 1
         let g:neocomplcache_enable_fuzzy_completion = 1         " 开启模糊匹配
         let g:neocomplcache_fuzzy_completion_start_length = 3   " 3个字母后开启模糊匹配
-        let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
-        let g:neocomplcache_dictionary_filetype_lists = {'_' : $HOME . "/.vim/static/dict_with_cases"}
+        let g:neocomplcache_force_overwrite_completefunc = 1
+        let g:neocomplcache_dictionary_filetype_lists = {'_' : $HOME.'/.vim/static/dict_with_cases'}
     " }
 
     " YouCompleteMe {
@@ -772,10 +706,6 @@
                 \'SyntasticToggleMode'],
             \['▷ Syntastic check & errors                   (syntastic)                 ⌘ ,r',
                 \'normal ,r'],
-            \['▷ Compile and runtimepath                    (SingleCompile)             ⌘ ,g',
-                \'SCCompileRun'],
-            \['▷ View result                                (SingleCompile)             ⌘ ,v',
-                \'SCViewResult'],
             \['▷ YCM compile and diagnostics                (YouCompleteMe)             ⌘ ,n',
                 \'normal ,cm'],
             \['▷ YCM go to definition                       (YouCompleteMe)             ⌘ ,j',
@@ -1002,10 +932,6 @@
                 \'Unite -start-insert command'],
             \['▷ vim functions                                                          ⌘ ',
                 \'Unite -start-insert function'],
-            \['▷ choose filetype                                                        ⌘ ',
-                \'Unite -start-insert filetype'],
-            \['▷ vim help                                                               ⌘ ',
-                \'Unite -start-insert help'],
             \['▷ vim runtimepath                                                        ⌘ ',
                 \'Unite -start-insert runtimepath'],
             \['▷ vim command output                                                     ⌘ ',
@@ -1018,43 +944,6 @@
                 \'Unite -start-insert launcher'],
             \]
         nnoremap <LocalLeader>v :Unite menu:vim<CR>
-
-        let g:unite_source_menu_menus.colorv = {
-            \ 'description' : '         color management
-                \                                       ⌘ <Space>l',
-            \}
-        let g:unite_source_menu_menus.colorv.command_candidates = [
-            \['▷ open colorv                                                            ⌘ ,cv',
-                \'ColorV'],
-            \['▷ open colorv with the color under the cursor                            ⌘ ,cw',
-                \'ColorVView'],
-            \['▷ preview colors                                                         ⌘ ,cpp',
-                \'ColorVPreview'],
-            \['▷ color picker                                                           ⌘ ,cd',
-                \'ColorVPicker'],
-            \['▷ edit the color under the cursor                                        ⌘ ,ce',
-                \'ColorVEdit'],
-            \['▷ edit the color under the cursor (and all the concurrences)             ⌘ ,cE',
-                \'ColorVEditAll'],
-            \['▷ insert a color                                                         ⌘ ,cii',
-                \'exe "ColorVInsert " .GetColorFormat()'],
-            \['▷ color list relative to the current                                     ⌘ ,cgh',
-                \'exe "ColorVList " .GetColorMethod() "
-                \ ".input("number of colors? (optional): ")
-                \ " ".input("number of steps?  (optional): ")'],
-            \['▷ show colors list (Web W3C colors)                                      ⌘ ,cn',
-                \'ColorVName'],
-            \['▷ choose color scheme (ColourLovers, Kuler)                              ⌘ ,css',
-                \'ColorVScheme'],
-            \['▷ show favorite color schemes                                            ⌘ ,csf',
-                \'ColorVSchemeFav'],
-            \['▷ new color scheme                                                       ⌘ ,csn',
-                \'ColorVSchemeNew'],
-            \['▷ create hue gradation between two colors                                ⌘ ',
-                \'exe "ColorVTurn2 " " ".input("Color 1 (hex): ")
-                \" ".input("Color 2 (hex): ")'],
-            \]
-        nnoremap <LocalLeader>l :Unite menu:colorv<CR>
 
         let g:unite_source_menu_menus.markdown = {
             \ 'description' : '       preview markdown extra docs
