@@ -1,4 +1,4 @@
-" Vundle {"{{{
+" Vundle {
     set nocompatible    " 设置 vim 为不兼容 vi 模式
     filetype off        " 必须的
 
@@ -43,7 +43,6 @@
     Bundle 'flazz/vim-colorschemes'
     Bundle 'altercation/vim-colors-solarized'
     Bundle "waylan/vim-markdown-extra-preview"
-    Bundle 'yonchu/accelerated-smooth-scroll'
     Bundle 'ianva/vim-youdao-translater'
     Bundle 'nathanaelkane/vim-indent-guides'
     Bundle 'bling/vim-airline'
@@ -63,6 +62,8 @@
     Bundle 'a.vim'
     Bundle 'TaskList.vim'
     Bundle 'python.vim'
+    Bundle 'sessionman.vim'
+    Bundle 'restore_view.vim'
 
     " 代码存放在其他地方
     " Bundle 'git://git.wincent.com/command-t.git'
@@ -73,10 +74,10 @@
     " :BundleInstall(!)    - install(update) bundles
     " :BundleSearch(!) foo - search(or refresh cache first) for foo
     " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
-    "
+
     " see :h vundle for more details or wiki for FAQ
     " NOTE: comments after Bundle command are not allowed..
-" }"}}}
+" }
 
 " General {
 
@@ -123,16 +124,16 @@
     au FileType yaml setlocal ts=2 sts=2 sw=2 et
     au FileType html setlocal ts=2 sts=2 sw=2 et
     au FileType css setlocal ts=2 sts=2 sw=2 et
-    au VimResized * exe "normal! \<c-w>="
-    au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
     au FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o       " 下一行不自动添加注释
-    au BufLeave * let b:winview = winsaveview()
-    au BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif     " 切换buffer时保持光标所在行在窗口中到位置
+    au BufLeave * let b:winview = winsaveview()                                     " 切换buffer时保持光标所在行在窗口中到位置
+    au BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
 
 " }
 
-    let mapleader=","           " 映射<leader>键,默认'\'   remain <Leader>u i o p
-    let maplocalleader=" "      " 映射<localleader>键 remain <LocalLeader>u i
+" Keymapping {
+
+    let mapleader=","           " 映射<leader>键,默认'\' remain <Leader>y u i o p g
+    let maplocalleader=" "      " 映射<localleader>键
     nmap j gj
     nmap k gk
     inoremap jj <ESC>
@@ -142,8 +143,9 @@
     noremap <silent><Leader>h :noh<CR>
     noremap <silent><Leader>s :set rnu! rnu?<CR>
     noremap <silent><Leader>l :set list! list?<CR>
-    noremap <silent><Leader>y :set spell! spell?<CR>
+    noremap <silent><Leader>v :set spell! spell?<CR>
     nnoremap <LocalLeader>o @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
+    nnoremap <LocalLeader>j <C-w>j:bd<CR>
 
     " 更方便窗口间移动
     nnoremap <C-h> <C-w>h
@@ -176,6 +178,19 @@
 
 " Vim UI {
 
+    if has('gui_running')
+        set guioptions-=m
+        set guioptions-=T
+        set guioptions-=r
+        set guioptions-=L
+        set lines=40                " 40 lines of text instead of 24
+        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 12
+        let g:airline_powerline_fonts = 1                   " 是否使用powerline字体
+    else
+        set t_Co=256                                        " 终端显示256色
+        let g:airline_powerline_fonts = 0                   " 是否使用powerline字体
+    endif
+
     if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
         let g:solarized_termcolors=256
         let g:solarized_termtrans=1
@@ -185,7 +200,6 @@
         set background=dark
     endif
 
-    set t_Co=256                    " 终端显示256色
     set tabpagemax=15               " 最多15个Tab
     set showmode                    " 显示当前mode
     set cursorline                  " 高亮当前行
@@ -195,15 +209,15 @@
     hi clear SignColumn             " 标记列背景和主题背景匹配
     hi clear LineNr                 " 当前行列背景和主题背景匹配
 
-    hi CursorLineNr ctermfg=red
-    hi VertSplit ctermbg=Grey ctermfg=Grey cterm=none
-    hi Visual ctermbg=81 ctermfg=black cterm=none
-    hi Comment ctermfg=blue
-    hi Statement ctermfg=cyan
-    hi DiffAdd ctermbg=blue ctermfg=white
-    hi DiffDelete ctermbg=green ctermfg=none
-    hi DiffChange ctermbg=red ctermfg=White
-    hi DiffText ctermbg=yellow ctermfg=black
+    hi CursorLineNr ctermfg=red guifg=red
+    hi VertSplit ctermbg=Grey ctermfg=Grey cterm=none guibg=Grey guifg=Grey
+    hi Visual ctermbg=81 ctermfg=black cterm=none guibg=cyan guifg=black
+    hi Comment ctermfg=blue guifg=gray
+    hi Statement ctermfg=cyan guifg=cyan
+    hi DiffAdd ctermbg=blue ctermfg=white guibg=blue guifg=white
+    hi DiffDelete ctermbg=green ctermfg=none guibg=green
+    hi DiffChange ctermbg=red ctermfg=White guibg=red guifg=White
+    hi DiffText ctermbg=yellow ctermfg=black guibg=yellow guifg=black
 
     if has('cmdline_info')
         set showcmd                 " 右下角显示当前操作
@@ -251,7 +265,7 @@
             setlocal colorcolumn=80
         endif
     endfunction
-    nnoremap <LocalLeader>y :call g:ToggleColorColumn()<CR>
+    nnoremap <LocalLeader>l :call g:ToggleColorColumn()<CR>
 
     command! -nargs=0 -bar Qargs execute 'args' QuickfixFilenames()     " :Qargs 提取quicklist中文件为arglist
     function! QuickfixFilenames()
@@ -262,7 +276,7 @@
       return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
     endfunction
 
-    " 一下function有外部依赖
+    " 以下function有外部依赖
 
     function! LinesOfCode()                         " 统计代码行数，需要cloc
         echo system('cloc --quiet '.bufname("%"))
@@ -291,8 +305,8 @@
 
     " vim-airline {
         set laststatus=2                                    " 显示状态栏
-        let g:airline_theme='powerlineish'                  " 设置主题
-        let g:airline_powerline_fonts = 0                   " 是否使用powerline字体
+        let g:airline_theme='solarized'                     " 设置主题
+        "let g:airline_powerline_fonts = 0                   " 是否使用powerline字体
         let g:airline#extensions#tabline#enabled = 1        " 顶部tab栏显示
         let g:airline#extensions#tabline#tab_nr_type = 1
         let g:airline#extensions#tabline#show_tab_nr = 1
@@ -368,6 +382,15 @@
             set undodir=~/.vim/.vimtmp/undo
         endif
         set viminfo+=n$HOME/.vim/.vimtmp/viminfo
+        set viewoptions=folds,options,cursor,unix,slash                 " restore_view.vim
+        set sessionoptions=blank,buffers,curdir,folds,tabpages,winsize  " sessionman.vim
+    " }
+
+    " sessionman.vim {
+        set sessionoptions=blank,buffers,curdir,folds,tabpages,winsize  " sessionman.vim
+        nmap <LocalLeader>y :SessionList<CR>
+        nmap <LocalLeader>u :SessionSave<CR>
+        nmap <LocalLeader>i :SessionClose<CR>
     " }
 
     " ctrlp {
@@ -393,8 +416,8 @@
         let g:syntastic_always_populate_loc_list=1
         let g:syntastic_loc_list_height = 6
         let g:syntastic_enable_highlighting = 0
-        hi SyntasticError ctermbg=red
-        hi SyntasticWarning ctermbg=yellow
+        hi SyntasticError ctermbg=red guibg=red
+        hi SyntasticWarning ctermbg=yellow guibg=yellow
         nmap <Leader>r :SyntasticCheck<CR>:Errors<CR>
         nmap <Leader>x :lnext<CR>
         nmap <Leader>z :lpre<CR>
@@ -429,7 +452,7 @@
             \ 'ignore_pattern', join(['\.git/', 'tmp/', 'bundle/'], '\|'))
         let g:unite_prompt = '>>> '
         let g:unite_marked_icon = '✓'
-        let g:unite_winheight = 15
+        let g:unite_winheight = 16
         let g:unite_update_time = 200
         let g:unite_split_rule = 'botright'
         let g:unite_source_history_yank_enable = 1
@@ -579,21 +602,21 @@
         let g:ycm_filetype_whitelist = {'c': 1, 'cpp': 1, 'java': 1, 'python': 1}
         let g:ycm_complete_in_comments = 1              " 评论中也应用补全
         let g:ycm_min_num_of_chars_for_completion = 2   " 两个字开始补全
-        let g:ycm_seed_identifiers_with_syntax = 1
+        "let g:ycm_seed_identifiers_with_syntax = 1
         let g:ycm_collect_identifiers_from_tags_files = 1
         let g:ycm_key_invoke_completion = '<C-Space>'
         let g:UltiSnipsExpandTrigger = "<C-j>"          " <C-j>代替<Tab>触发ultisnips补全代码段
-        let g:ycm_semantic_triggers = {
-            \ 'c' : ['->', '.'],
-            \ 'objc' : ['->', '.'],
-            \ 'cpp,objcpp' : ['->', '.', '::'],
-            \ 'ocaml' : ['.', '#'],
-            \ 'perl' : ['->'],
-            \ 'php' : ['->', '::'],
-            \ 'cs,java,javascript,vim,coffee,python,scala,go' : ['.'],
-            \ 'ruby' : ['.', '::'],
-            \ 'lua' : ['.', ':'],
-            \ 'erlang' : [':'],
+        let g:ycm_semantic_triggers =  {
+            \   'c' : ['->', '.'],
+            \   'objc' : ['->', '.'],
+            \   'ocaml' : ['.', '#'],
+            \   'cpp,objcpp' : ['->', '.', '::'],
+            \   'perl' : ['->'],
+            \   'php' : ['->', '::'],
+            \   'cs,java,javascript,d,vim,python,perl6,scala,vb,elixir,go' : ['.'],
+            \   'ruby' : ['.', '::'],
+            \   'lua' : ['.', ':'],
+            \   'erlang' : [':'],
             \ }
         nnoremap <Leader>n :YcmForceCompileAndDiagnostics<CR>
         nnoremap <Leader>j :YcmCompleter GoToDefinitionElseDeclaration<CR>
@@ -601,7 +624,7 @@
 
 " }
 
-" Unite Menu {"{{{
+" Unite Menu {
         let g:unite_source_menu_menus = {}
         nnoremap <LocalLeader>m :Unite menu<CR>
 
@@ -654,15 +677,15 @@
                 \'Unite bookmark:*'],
             \['▷ Unite add bookmark                                                     ⌘ ',
                 \'UniteBookmarkAdd'],
-            \['▷ Text add bookmark                                                      ⌘ m[a-zA-Z]',
+            \['▷ Text add mark                                                      ⌘ m[a-zA-Z]',
                 \'normal m,'],
-            \['▷ Add next bookmark                  (vim-signature)                     ⌘ m,',
+            \['▷ Add next mark                  (vim-signature)                     ⌘ m,',
                 \'normal m,'],
-            \['▷ Next bookmark                      (vim-signature)                     ⌘ ]`',
+            \['▷ Next mark                      (vim-signature)                     ⌘ ]`',
                 \'normal ]`'],
-            \['▷ Prev bookmark                      (vim-signature)                     ⌘ [`',
+            \['▷ Prev mark                      (vim-signature)                     ⌘ [`',
                 \'normal [`'],
-            \['▷ Clear bookmark                     (vim-signature)                     ⌘ m<Space>',
+            \['▷ Clear mark                     (vim-signature)                     ⌘ m<Space>',
                 \'normal m '],
             \]
         nnoremap <LocalLeader>b :Unite menu:bookmarks<CR>
@@ -732,6 +755,12 @@
                 \'Unite -start-insert file'],
             \['▷ open file with recursive search                                        ⌘ ',
                 \'Unite -start-insert file_rec/async'],
+            \['▷ session list                                                           ⌘ <Space>y',
+                \':SessionList'],
+            \['▷ session save                                                           ⌘ <Space>u',
+                \':SessionSave'],
+            \['▷ session close                                                          ⌘ <Space>i',
+                \':SessionClose'],
             \['▷ search directory                                                       ⌘ ',
                 \'Unite -start-insert directory'],
             \['▷ search directory with recursive search                                 ⌘ ',
@@ -870,8 +899,8 @@
                 \'normal ,s'],
             \['▷ show hidden chars                                                      ⌘ ,l',
                 \'normal ,l'],
-            \['▷ spell check                                                            ⌘ ,y',
-                \'normal ,y'],
+            \['▷ spell check                                                            ⌘ ,v',
+                \'normal ,v'],
             \['▷ toggle fold                                                            ⌘ <Space>o',
                 \'normal <Space>o'],
             \['▷ multiple-cursors: next               (vim-multiple-cursors)            ⌘ <C-n>',
@@ -897,7 +926,7 @@
 
         let g:unite_source_menu_menus.tabularize = {
             \ 'description' : '     tabularize
-                \                                             ⌘ <Space>d',
+                \                                             ⌘ <Space>a',
             \}
         let g:unite_source_menu_menus.tabularize.command_candidates = [
             \['▷ Tabularize &                                                           ⌘ <Space>&',
@@ -915,7 +944,7 @@
             \['▷ Tabularize <Bar>                                                       ⌘ <Space><Bar>',
                 \'Tabularize /<Bar>'],
             \]
-        nnoremap <LocalLeader>j :Unite menu:tabularize<CR>
+        nnoremap <LocalLeader>a :Unite menu:tabularize<CR>
 
         let g:unite_source_menu_menus.vim = {
             \ 'description' : '            vim
@@ -967,4 +996,4 @@
             \]
         nnoremap <LocalLeader>w :Unite -silent menu:web<CR>
 
-" }"}}}
+" }
