@@ -1,4 +1,4 @@
-" Vundle {
+" Vundle {"{{{
     set nocompatible    " 设置 vim 为不兼容 vi 模式
     filetype off        " 必须的
 
@@ -77,7 +77,7 @@
 
     " see :h vundle for more details or wiki for FAQ
     " NOTE: comments after Bundle command are not allowed..
-" }
+" }"}}}
 
 " General {
 
@@ -568,29 +568,31 @@
         autocmd FileType java inoremap <buffer> . .<C-X><C-O><C-P>
     " }
 
-"    " neocomplete {
-"        au Filetype c,cpp,java,python let g:neocomplete#enable_at_startup = 0
-"        let g:acp_enableAtStartup = 0
-"        let g:neocomplete#enable_at_startup = 1
-"        let g:neocomplete#enable_smart_case = 1
-"        let g:neocomplete#sources#syntax#min_keyword_length = 3
-"        let g:neocomplete#enable_auto_delimiter = 1
-"        let g:neocomplete#max_list = 15
-"        let g:neocomplete#sources#dictionary#dictionaries = {'_' : $HOME.'/.vim/static/dict_with_cases'}
-"    " }
+    " neocomplete {
+    "    au Filetype c,cpp,java,python let g:neocomplete#enable_at_startup = 0
+    "    let g:acp_enableAtStartup = 0
+    "    let g:neocomplete#max_list = 15
+    "    let g:neocomplete#enable_at_startup = 1
+    "    let g:neocomplete#enable_smart_case = 1
+    "    let g:neocomplete#enable_camel_case = 1
+    "    let g:neocomplete#enable_auto_delimiter = 1
+    "    let g:neocomplete#sources#syntax#min_keyword_length = 3
+    "    let g:neocomplete#sources#dictionary#dictionaries = {'_' : $HOME.'/.vim/static/dict_with_cases'}
+    " }
 
     " neocomplcache {
         au Filetype c,cpp,java,python let g:neocomplcache_enable_at_startup = 0
+        au Filetype c,cpp,java,python let g:neocomplcache_force_overwrite_completefunc = 0
         let g:acp_enableAtStartup = 0
         let g:neocomplcache_max_list = 15
         let g:neocomplcache_enable_at_startup = 1
+        let g:neocomplcache_enable_smart_case = 1
         let g:neocomplcache_enable_camel_case_completion = 1
         let g:neocomplcache_enable_underbar_completion = 1
-        let g:neocomplcache_enable_smart_case = 1
         let g:neocomplcache_enable_auto_delimiter = 1
+        let g:neocomplcache_force_overwrite_completefunc = 1
         let g:neocomplcache_enable_fuzzy_completion = 1         " 开启模糊匹配
         let g:neocomplcache_fuzzy_completion_start_length = 3   " 3个字母后开启模糊匹配
-        let g:neocomplcache_force_overwrite_completefunc = 1
         let g:neocomplcache_dictionary_filetype_lists = {'_' : $HOME.'/.vim/static/dict_with_cases'}
     " }
 
@@ -602,7 +604,7 @@
         let g:ycm_filetype_whitelist = {'c': 1, 'cpp': 1, 'java': 1, 'python': 1}
         let g:ycm_complete_in_comments = 1              " 评论中也应用补全
         let g:ycm_min_num_of_chars_for_completion = 2   " 两个字开始补全
-        "let g:ycm_seed_identifiers_with_syntax = 1
+        let g:ycm_seed_identifiers_with_syntax = 1
         let g:ycm_collect_identifiers_from_tags_files = 1
         let g:ycm_key_invoke_completion = '<C-Space>'
         let g:UltiSnipsExpandTrigger = "<C-j>"          " <C-j>代替<Tab>触发ultisnips补全代码段
@@ -624,7 +626,7 @@
 
 " }
 
-" Unite Menu {
+" Unite Menu {"{{{
         let g:unite_source_menu_menus = {}
         nnoremap <LocalLeader>m :Unite menu<CR>
 
@@ -996,4 +998,4 @@
             \]
         nnoremap <LocalLeader>w :Unite -silent menu:web<CR>
 
-" }
+" }"}}}
