@@ -1,7 +1,6 @@
-" Vundle {"{{{
+" Vundle {
     set nocompatible    " 设置 vim 为不兼容 vi 模式
     filetype off        " 必须的
-
     set rtp+=~/.vim/bundle/vundle/
     call vundle#rc()
 
@@ -24,7 +23,6 @@
     Bundle 'ujihisa/unite-colorscheme'
     Bundle "ujihisa/unite-locate"
     Bundle "tacroe/unite-mark"
-    Bundle "mattn/unite-gist"
     Bundle 'mattn/gist-vim'
     Bundle 'mattn/webapi-vim'
     Bundle "mattn/emmet-vim"
@@ -44,11 +42,10 @@
     Bundle 'altercation/vim-colors-solarized'
     Bundle "waylan/vim-markdown-extra-preview"
     Bundle 'ianva/vim-youdao-translater'
-    Bundle 'nathanaelkane/vim-indent-guides'
+    Bundle 'Yggdroot/indentLine'
     Bundle 'bling/vim-airline'
     Bundle 'klen/python-mode'
     Bundle 'Valloric/YouCompleteMe'
-
     Bundle 'groenewege/vim-less'
     Bundle "pangloss/vim-javascript"
     Bundle 'hail2u/vim-css3-syntax'
@@ -68,7 +65,6 @@
     " 代码存放在其他地方
     " Bundle 'git://git.wincent.com/command-t.git'
 
-    filetype plugin indent on     " 必须有,打开文件类型检测
     " Brief help
     " :BundleList          - list configured bundles
     " :BundleInstall(!)    - install(update) bundles
@@ -77,12 +73,14 @@
 
     " see :h vundle for more details or wiki for FAQ
     " NOTE: comments after Bundle command are not allowed..
-" }"}}}
+" }
 
 " General {
 
     syntax on                       " 关键字上色
     syntax enable                   " 语法高亮
+    filetype plugin indent on       " 必须有,打开文件类型检测
+
     set nu                          " 显示行号
     set nocp                        " 不兼容vi
     set hidden                      " 允许不保存切换buffer
@@ -95,12 +93,10 @@
     set scrolloff=1                 " 保持在光标上下最少行数
     set showmatch                   " 短暂回显匹配括号
     set pastetoggle=<F8>            " 转换粘贴模式
-
     set hlsearch                    " 检索时高亮显示匹配项
     set incsearch                   " 边输入边搜索
     set ignorecase                  " 搜索忽略大小写
     set smartcase                   " 智能大小写搜索
-
     set wildmenu                    " 命令模式下补全以菜单形式显示
     set wildmode=list:longest,full  " 命令模式补全模式
     set foldenable                  " 启动折叠
@@ -158,7 +154,7 @@
     cnoremap <C-e> <End>
     cnoremap <C-p> <Up>
     cnoremap <C-n> <Down>
-    cmap w!! w !sudo tee % >/dev/null<CR>:e!<CR><CR>
+    cmap w!! SudoWrite %
 
     " Tab操作
     nnoremap <Leader>tc :tabc<CR>
@@ -184,7 +180,7 @@
         set guioptions-=r
         set guioptions-=L
         set lines=40                " 40 lines of text instead of 24
-        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 12
+        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 11
         let g:airline_powerline_fonts = 1                   " 是否使用powerline字体
     else
         set t_Co=256                                        " 终端显示256色
@@ -335,6 +331,8 @@
         set cscopequickfix=s-,c-,d-,i-,t-,e-   " 使用QuickFix窗口来显示cscope查找结果
         if filereadable("cscope.out")
             cs add cscope.out
+        elseif filereadable("tags")
+            set tags=./tags
         endif
         nmap <Leader><Leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>
         nmap <Leader><Leader>1 :cs find g<Space>
@@ -534,10 +532,9 @@
         vmap <LocalLeader><Bar> :Tabularize /<Bar><CR>
     " }
 
-    " vim-indent-guides {
-        let g:indent_guides_enable_on_vim_startup=0
-        let g:indent_guides_start_level=2
-        let g:indent_guides_guide_size=1
+    " indentLine {
+        let g:indentLine_enabled=0
+        nmap <Leader>g :IndentLinesToggle<CR>
     " }
 
     " PyMode {
@@ -570,12 +567,14 @@
 
     " neocomplete {
     "    au Filetype c,cpp,java,python let g:neocomplete#enable_at_startup = 0
+    "    au Filetype c,cpp,java,python let g:neocomplete_force_overwrite_completefunc = 0
     "    let g:acp_enableAtStartup = 0
     "    let g:neocomplete#max_list = 15
     "    let g:neocomplete#enable_at_startup = 1
     "    let g:neocomplete#enable_smart_case = 1
     "    let g:neocomplete#enable_camel_case = 1
     "    let g:neocomplete#enable_auto_delimiter = 1
+    "    let g:neocomplete_force_overwrite_completefunc = 1
     "    let g:neocomplete#sources#syntax#min_keyword_length = 3
     "    let g:neocomplete#sources#dictionary#dictionaries = {'_' : $HOME.'/.vim/static/dict_with_cases'}
     " }
@@ -626,7 +625,7 @@
 
 " }
 
-" Unite Menu {"{{{
+" Unite Menu {
         let g:unite_source_menu_menus = {}
         nnoremap <LocalLeader>m :Unite menu<CR>
 
@@ -723,8 +722,8 @@
         let g:unite_source_menu_menus.code.command_candidates = [
             \['▷ Count lines of code                                                    ⌘ ',
                 \'Unite -default-action= output:call\\ LinesOfCode()'],
-            \['▷ Toggle indent lines                        (indent-guides)             ⌘ ,ig',
-                \'IndentGuidesToggle'],
+            \['▷ Toggle indent lines                        (indent-guides)             ⌘ ,g',
+                \'IndentLinesToggle'],
             \['▷ Tagbar                                     (Tagbar)                    ⌘ ,e',
                 \'Tagbar'],
             \['▷ Syntastic toggle                           (syntastic)                 ⌘ ',
@@ -998,4 +997,4 @@
             \]
         nnoremap <LocalLeader>w :Unite -silent menu:web<CR>
 
-" }"}}}
+" }

@@ -2,6 +2,8 @@
 
     syntax on                       " 关键字上色
     syntax enable                   " 语法高亮
+    filetype plugin indent on       " 必须有,打开文件类型检测
+
     set nu                          " 显示行号
     set nocp                        " 不兼容vi
     set hidden                      " 允许不保存切换buffer
@@ -14,12 +16,10 @@
     set scrolloff=1                 " 保持在光标上下最少行数
     set showmatch                   " 短暂回显匹配括号
     set pastetoggle=<F8>            " 转换粘贴模式
-
     set hlsearch                    " 检索时高亮显示匹配项
     set incsearch                   " 边输入边搜索
     set ignorecase                  " 搜索忽略大小写
     set smartcase                   " 智能大小写搜索
-
     set wildmenu                    " 命令模式下补全以菜单形式显示
     set wildmode=list:longest,full  " 命令模式补全模式
     set foldenable                  " 启动折叠
@@ -27,7 +27,6 @@
     set encoding=utf-8              " 编码，使汉语正常显示
     set termencoding=utf-8
     set fileencodings=utf-8,gb2312,gbk,gb18030
-    filetype plugin indent on       " 必须有,打开文件类型检测
 
 " }
 
