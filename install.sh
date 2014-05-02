@@ -36,6 +36,16 @@ then
     mkdir -p $HOME/.vim/.vimtmp/unite
 fi
 
+if [ ! -d $HOME/.vim/sessions ]
+then
+    mkdir -p $HOME/.vim/sessions
+fi
+
+if [ ! -d $HOME/.vim/view ]
+then
+    mkdir -p $HOME/.vim/view
+fi
+
 if [ ! -d $HOME/.fonts ]
 then
     mkdir -p $HOME/.fonts
@@ -64,10 +74,14 @@ then
     make
 fi
 
-echo "Step5: compile YouCompleteMe"
-echo "It will take a long time, just be patient!"
-echo "if error, you need to compile it yourself."
-cd $VIM_DIR/bundle/YouCompleteMe/
-bash -x install.sh --clang-completer
+read -p "Will you install YouCompleteMe? (y/n) " -n 1
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Step5: compile YouCompleteMe"
+    echo "It will take a long time, just be patient!"
+    echo "if error, you need to compile it yourself."
+    cd $VIM_DIR/bundle/YouCompleteMe/
+    bash -x install.sh --clang-completer
+fi
 
 echo "Install Done"
