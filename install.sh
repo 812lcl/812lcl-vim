@@ -36,6 +36,13 @@ then
     mkdir -p $HOME/.vim/.vimtmp/unite
 fi
 
+if [ ! -d $HOME/.fonts ]
+then
+    mkdir -p $HOME/.fonts
+    cp -rf $VIM_DIR/fonts/* $HOME/.fonts
+    fc-cache -vf $HOME/.fonts
+fi
+
 echo "Step3: install vundle"
 if [ ! -e $VIM_DIR/bundle/vundle ]; then
     echo "Installing Vundle"
