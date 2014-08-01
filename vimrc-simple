@@ -106,7 +106,7 @@
         set guioptions-=L
         set lines=40
         source $VIMRUNTIME/delmenu.vim
-        source $VIMRUNTIME/menu.vim
+        "source $VIMRUNTIME/menu.vim
     endif
     
     color desert                    " 载入皮肤主题
