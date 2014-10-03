@@ -19,13 +19,13 @@
     Bundle 'Shougo/unite.vim'
     Bundle 'Shougo/neomru.vim'
     Bundle 'Shougo/unite-outline'
-    Bundle "osyo-manga/unite-quickfix"
+    Bundle 'osyo-manga/unite-quickfix'
     Bundle 'ujihisa/unite-colorscheme'
-    Bundle "ujihisa/unite-locate"
-    Bundle "tacroe/unite-mark"
+    Bundle 'ujihisa/unite-locate'
+    Bundle 'tacroe/unite-mark'
     Bundle 'mattn/gist-vim'
     Bundle 'mattn/webapi-vim'
-    Bundle "mattn/emmet-vim"
+    Bundle 'mattn/emmet-vim'
     Bundle 'scrooloose/syntastic'
     Bundle 'scrooloose/nerdtree'
     Bundle 'scrooloose/nerdcommenter'
@@ -40,14 +40,14 @@
     Bundle 'gorodinskiy/vim-coloresque'
     Bundle 'flazz/vim-colorschemes'
     Bundle 'altercation/vim-colors-solarized'
-    Bundle "waylan/vim-markdown-extra-preview"
+    Bundle 'waylan/vim-markdown-extra-preview'
     Bundle 'ianva/vim-youdao-translater'
     Bundle 'Yggdroot/indentLine'
     Bundle 'bling/vim-airline'
     Bundle 'klen/python-mode'
     Bundle 'Valloric/YouCompleteMe'
     Bundle 'groenewege/vim-less'
-    Bundle "pangloss/vim-javascript"
+    Bundle 'pangloss/vim-javascript'
     Bundle 'hail2u/vim-css3-syntax'
     Bundle 'elzr/vim-json'
 
